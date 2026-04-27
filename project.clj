@@ -8,10 +8,11 @@
                  [cheshire "5.12.0"]
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]
+                 [metosin/reitit "0.7.2"]
                  [environ "1.1.0"]]
   :main ^:skip-aot agenttinen.core
-  :ring {:handler agenttinen.core/app
-        :init  agenttinen.core/start-server}
+  :ring {:handler agenttinen.core/app}
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all
+  :profiles {:dev {:dependencies [[ring/ring-mock "0.4.0"]]}
+             :uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})
