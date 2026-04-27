@@ -1,0 +1,6 @@
+{;; Configuration for Agenttinen
+ :server {:port 3000}
+ :opencode {:api-url "https://opencode.ai/zen/v1/chat/completions"
+           :model "minimax-m2.5-free"
+           :max-tokens 1000}
+ :api-key "YOUR_API_KEY_HERE"}

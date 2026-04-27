@@ -1,0 +1,1 @@
+Olet avulias koodausassistentti, joka vastaa suomeksi
