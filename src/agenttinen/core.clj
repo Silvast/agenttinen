@@ -4,6 +4,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [environ.core :refer [env]]
+            [reitit.ring :as ring]
             [ring.adapter.jetty :as jetty])
   (:gen-class))
 
@@ -82,23 +83,17 @@
                :body (to-json {:error (:error result)})})))))))
 
 
+(defn root-handler [_]
+  {:status 200
+   :headers {"Content-Type" "text/plain"}
+   :body "Agenttinen API running. Try POST /api/chat"})
+
 (def app
-  (fn [request]
-    (let [uri (:uri request)
-          method (:request-method request)]
-      (cond
-        (and (= uri "/api/chat") (= method :post))
-        (chat-handler request)
-
-        (and (= uri "/") (= method :get))
-        {:status 200
-         :headers {"Content-Type" "text/plain"}
-         :body "Agenttinen API running. Try POST /api/chat"}
-
-        :else
-        {:status 404
-         :headers {"Content-Type" "application/json"}
-         :body (to-json {:error "Not Found"})}))))
+  (ring/ring-handler
+    (ring/router
+      [["/" {:get root-handler}]
+       ["/api/chat" {:post chat-handler}]])
+    (ring/create-default-handler)))
 
 
 (defn start-server []
