@@ -1,7 +1,6 @@
 (ns agenttinen.opencode
   (:require [cheshire.core :as json]
-            [clj-http.client :as http])
-  (:gen-class))
+            [clj-http.client :as http]))
 
 
 (def client-config

@@ -2,13 +2,11 @@
   (:require [reitit.ring :as ring]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
-            [agenttinen.opencode :as opencode])
-  (:gen-class))
+            [agenttinen.opencode :as opencode]))
 
 
 (defn chat-handler [config request]
   (let [api-key (or (env :opencode-api-key)
-                    (System/getenv "OPENCODE_API_KEY")
                     (get-in config [:opencode :api-key]))]
     (if-not api-key
       {:status 401
