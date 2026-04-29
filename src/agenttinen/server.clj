@@ -4,7 +4,6 @@
             [environ.core :refer [env]]
             [agenttinen.opencode :as opencode]))
 
-
 (defn chat-handler [config request]
   (let [api-key (or (env :opencode-api-key)
                     (get-in config [:opencode :api-key]))]
@@ -14,13 +13,14 @@
        :body (opencode/to-json {:error "OPENCODE_API_KEY not set - set in environment (OPENCODE_API_KEY), .edn config, or as :opencode-api-key"})}
       (let [body-str (slurp (:body request))
             body (opencode/parse-json body-str)
-            user-prompt (:user-prompt body)]
+            user-prompt (:user-prompt body)
+            model (:model body)]
         (if-not user-prompt
           {:status 400
            :headers {"Content-Type" "application/json"}
            :body (opencode/to-json {:error "Missing user-prompt in request body"})}
           (let [system-prompt (get-in config [:system-prompt])
-                result (opencode/chat-completion config api-key system-prompt user-prompt)]
+                result (opencode/chat-completion config api-key system-prompt user-prompt model)]
             (if (:ok result)
               {:status 200
                :headers {"Content-Type" "application/json"}
