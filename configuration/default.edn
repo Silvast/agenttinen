@@ -2,5 +2,6 @@
  :server {:port 3000}
  :opencode {:api-url "https://opencode.ai/zen/v1/chat/completions"
            :model "minimax-m2.5-free"
+           :allowed-models ["minimax-m2.5-free", "nemotron-3-super-free"]
            :max-tokens 1000}
  :api-key "YOUR_API_KEY_HERE"}

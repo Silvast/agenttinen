@@ -23,14 +23,14 @@ Sends a chat message to the OpenCode API and returns the assistant's response.
 | Parameter    | Type   | Required | Description                                        |
 |--------------|--------|----------|----------------------------------------------------|
 | `user-prompt`| string | Yes      | The user's message / prompt to send to the model.  |
-| `model`      | string | No       | The model to use (e.g. `minimax-m2.5-free`).       |
+| `model`      | string | No       | The configured allowed model to use. Defaults to the server config model. |
 
 **Response:**
 
 | Status | Body                                    |
 |--------|-----------------------------------------|
 | 200    | `{"content": "<assistant response>"}`   |
-| 400    | `{"error": "Missing user-prompt..."}`   |
+| 400    | `{"error": "Missing user-prompt..."}` or `{"error": "Unsupported model"}` |
 | 401    | `{"error": "OPENCODE_API_KEY not set"}` |
 | 500    | `{"error": "<error details>"}`          |
 
@@ -41,6 +41,8 @@ curl -X POST http://localhost:3000/api/chat \
   -H "Content-Type: application/json" \
   -d '{"model": "minimax-m2.5-free", "user-prompt": "Heippa!"}'
 ```
+
+Request-selected models must be present in `:opencode :allowed-models`; when `model` is omitted, the server uses `:opencode :model`.
 
 ## License
 

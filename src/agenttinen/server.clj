@@ -20,14 +20,19 @@
            :headers {"Content-Type" "application/json"}
            :body (opencode/to-json {:error "Missing user-prompt in request body"})}
           (let [system-prompt (get-in config [:system-prompt])
-                result (opencode/chat-completion config api-key system-prompt user-prompt model)]
-            (if (:ok result)
-              {:status 200
+                selected-model (opencode/resolve-model config model)]
+            (if-not selected-model
+              {:status 400
                :headers {"Content-Type" "application/json"}
-               :body (opencode/to-json {:content (:content result)})}
-              {:status 500
-               :headers {"Content-Type" "application/json"}
-               :body (opencode/to-json {:error (:error result)})})))))))
+               :body (opencode/to-json {:error "Unsupported model"})}
+              (let [result (opencode/chat-completion config api-key system-prompt user-prompt selected-model)]
+                (if (:ok result)
+                  {:status 200
+                   :headers {"Content-Type" "application/json"}
+                   :body (opencode/to-json {:content (:content result)})}
+                  {:status 500
+                   :headers {"Content-Type" "application/json"}
+                   :body (opencode/to-json {:error (:error result)})})))))))))
 
 
 (defn root-handler [_]

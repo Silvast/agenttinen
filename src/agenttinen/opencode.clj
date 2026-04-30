@@ -17,10 +17,20 @@
   (json/generate-string m))
 
 
+(defn resolve-model [config requested-model]
+  (let [default-model (get-in config [:opencode :model])
+        allowed-models (set (or (seq (get-in config [:opencode :allowed-models]))
+                                [default-model]))
+        selected-model (or requested-model default-model)]
+    (when (contains? allowed-models selected-model)
+      selected-model)))
+
+
 (defn chat-completion [config api-key system-prompt user-prompt model]
   (let [url (get-in config [:opencode :api-url])
+        selected-model (or model (get-in config [:opencode :model]))
         request-body (json/generate-string
-              {:model (or model (get-in config [:opencode :model]))
+              {:model selected-model
                :messages [{:role "system" :content system-prompt}
                           {:role "user" :content user-prompt}]
                :max_tokens (get-in config [:opencode :max-tokens])})]
